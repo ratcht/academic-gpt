@@ -1,0 +1,9 @@
+openai
+chromadb
+sentence-transformers
+numpy
+pandas
+langchain
+python-dotenv
+langchain-openai
+transformers

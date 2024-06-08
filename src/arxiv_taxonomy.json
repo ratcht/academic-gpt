@@ -1,0 +1,6 @@
+{
+  "q-fin":["q-fin.CP","q-fin.EC","q-fin.GN","q-fin.MF","q-fin.PM","q-fin.PR","q-fin.RM","q-fin.ST","q-fin.TR"],
+  "cs":["cs.AI","cs.AR", "cs.CC", "cs.CE", "cs.CL", "cs.CR", "cs.CV","cs.DB", "cs.DC",  "cs.DS", "cs.ET", "cs.GL", "cs.HC", "cs.IR", "cs.MA", "cs.NE", "cs.RO"],
+  "stat":["stat.CO", "stat.ML"],
+  "eess":["eess.AS", "eess.IV", "eess.SP", "eess.SY"]
+}
