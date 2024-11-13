@@ -18,10 +18,7 @@ logger = logging.getLogger(name="server")
 
 app = FastAPI()
 
-arxiv_loader = ArxivLoader()
-
 llm = LLM()
-reranker = Reranker()
 
 @app.get("/")
 async def root():
@@ -34,10 +31,10 @@ async def search(query: str):
   search_query = llm.template_query("user_to_search", user_query=query)\
   
   # Step 2:
-  docs = list(arxiv_loader.search(search_query))
+  docs = list(ArxivLoader.search(search_query))
 
   # Step 3:
-  reranked_indices = reranker.rerank(query, docs)
+  reranked_indices = Reranker.rerank(query, docs)
   reranked_urls = [docs[i].pdf_url for i in reranked_indices]
 
   # Step 4:
