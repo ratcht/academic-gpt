@@ -38,7 +38,7 @@ class Embedding():
 
     if self.__embedding_model == "openai":
       self.__client = OpenAIEmbeddings(
-          api_key=self.__key, model="text-embedding-3-small", organization=self.__org)
+          api_key=self.__key, model="text-embedding-3-large", organization=self.__org)
     elif self.__embedding_model == "hf":
       # load in model seperately so it can trust remote code
       self.__client = HuggingFaceEmbeddings(model_name=hf_model,model_kwargs={"trust_remote_code":True})
