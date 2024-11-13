@@ -8,10 +8,19 @@ import langchain
 import logging
 import numpy as np
 from chroma import ChromaDB
+import json
 
 # For Testing Purposes...
 langchain.debug = True
 logging.basicConfig(level=logging.ERROR)
+
+class Template():
+
+  @classmethod
+  def get_template_filled(cls, template_name, **kwargs):
+    template: str = json.loads(template_name)
+    template = template.format(**kwargs)
+    return template
 
 
 class LLM():
@@ -105,6 +114,7 @@ class LLM():
 
     return content_response
 
+  
   def stream_query(self, query, system_message="You're a helpful assistant"):
     """
     Stream a query using LLM.
@@ -132,6 +142,41 @@ class LLM():
     out = AIMessage(content=out)
     self.__history.append(query_message)
     self.__history.append(out)
+
+
+  def template_query(self, template, system_message="You're a helpful assistant", **kwargs) -> str:
+    """
+    Processes a query using LLM.
+
+    Args:
+      query (str): The query string.
+
+    Returns:
+      str: The response from the language model.
+    """
+
+    query = template.format(**kwargs)
+
+    query_message = HumanMessage(content=query)
+
+    messages = [
+      SystemMessage(content=system_message),
+      *self.__history,
+      query_message
+    ]
+
+    response = self.__client.invoke(input=messages)
+
+    token_usage: dict = response.response_metadata["token_usage"]
+    logging.debug(token_usage)
+    token_stats = np.array(list(token_usage.values()))
+    self.__token_usage += token_stats
+
+    content_response = response.content
+    self.__history.append(query_message)
+    self.__history.append(AIMessage(content=content_response))
+
+    return content_response
 
   def end_chat(self) -> None:
     """
