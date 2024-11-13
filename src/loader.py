@@ -18,5 +18,5 @@ class ArxivLoader:
 
     # `results` is a generator; you can iterate over its elements one by one...
     for r in results:
-      doc = Document(r.entry_id, r.primary_category, r.title, r.summary, r.published, r.pdf_url, False)
+      doc = Document(id=r.entry_id, category=r.primary_category, title=r.title, summary=r.summary, published_on=r.published, pdf_url=r.pdf_url)
       yield doc

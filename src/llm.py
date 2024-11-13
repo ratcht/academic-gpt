@@ -52,7 +52,7 @@ class LLM():
     self.__token_usage = np.zeros(shape=(3))  # ['completion_tokens', 'prompt_tokens', 'total_tokens'], Does not track streaming tokens
 
 
-  def rag_query(self, query, chroma_client: ChromaDB, system_message="You're a helpful assistant") -> str:
+  def rag_query(self, query: str, documents: list[str], system_message="You're a helpful assistant") -> str:
     """
     Processes a query using LLM.
 
@@ -62,7 +62,11 @@ class LLM():
     Returns:
       str: The response from the language model.
     """
-    
+
+    base = Template.get_template_filled("rag_base", user_query=query)
+    documents = [Template.get_template_filled("rag_document", document=doc) for doc in documents]
+    documents = "\n".join(documents)
+    query = base + documents
 
     query_message = HumanMessage(content=query)
 
@@ -76,8 +80,6 @@ class LLM():
 
     token_usage: dict = response.response_metadata["token_usage"]
     logging.debug(token_usage)
-    token_stats = np.array(list(token_usage.values()))
-    self.__token_usage += token_stats
 
     content_response = response.content
     self.__history.append(query_message)
