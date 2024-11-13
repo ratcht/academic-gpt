@@ -1,11 +1,20 @@
 import urllib, urllib.request
-
+from pydantic import BaseModel
 
 class ChunkType:
   def __init__(self, chunk: str, id: str, metadata: dict|None = None):
     self.chunk = chunk
     self.id = id
     self.metadata = metadata
+
+class DocumentFormat(BaseModel):
+  """
+  This class defines the structure for the document (split up into intro, references, etc.).
+
+  Use zero ocr from omniAI
+  """
+  def __init__(self):
+    pass
 
 class Document:
   def __init__(self, id, category, title, summary, published_on, pdf_url, is_downloaded=False, doc_path="docs"):

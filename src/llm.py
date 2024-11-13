@@ -15,10 +15,12 @@ langchain.debug = True
 logging.basicConfig(level=logging.ERROR)
 
 class Template():
+  with open("templates.json") as f:
+    templates = json.load(f)
 
   @classmethod
   def get_template_filled(cls, template_name, **kwargs):
-    template: str = json.loads(template_name)
+    template: str = cls.templates[template_name]
     template = template.format(**kwargs)
     return template
 
@@ -105,8 +107,6 @@ class LLM():
 
     token_usage: dict = response.response_metadata["token_usage"]
     logging.debug(token_usage)
-    token_stats = np.array(list(token_usage.values()))
-    self.__token_usage += token_stats
 
     content_response = response.content
     self.__history.append(query_message)
@@ -144,7 +144,7 @@ class LLM():
     self.__history.append(out)
 
 
-  def template_query(self, template, system_message="You're a helpful assistant", **kwargs) -> str:
+  def template_query(self, template_name: str, system_message="You're a helpful assistant", **kwargs) -> str:
     """
     Processes a query using LLM.
 
@@ -155,7 +155,9 @@ class LLM():
       str: The response from the language model.
     """
 
-    query = template.format(**kwargs)
+    query = Template.get_template_filled(template_name, **kwargs)
+
+    print(query)
 
     query_message = HumanMessage(content=query)
 
@@ -169,8 +171,6 @@ class LLM():
 
     token_usage: dict = response.response_metadata["token_usage"]
     logging.debug(token_usage)
-    token_stats = np.array(list(token_usage.values()))
-    self.__token_usage += token_stats
 
     content_response = response.content
     self.__history.append(query_message)
